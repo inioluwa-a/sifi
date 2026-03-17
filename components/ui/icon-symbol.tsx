@@ -18,6 +18,18 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'payments': 'payments',
+  'trending.up': 'trending-up',
+  'trending.down': 'trending-down',
+  'shopping.bag': 'shopping-bag',
+  'arrow.downward': 'arrow-downward',
+  'lightbulb': 'lightbulb',
+  'verified': 'verified',
+  'dashboard': 'dashboard',
+  'receipt': 'receipt-long',
+  'settings': 'settings',
+  'account.balance': 'account-balance',
+  'bar.chart': 'bar-chart',
 } as IconMapping;
 
 /**

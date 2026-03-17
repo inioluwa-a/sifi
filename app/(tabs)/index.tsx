@@ -1,98 +1,186 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import React from 'react';
+import { StyleSheet, View, ScrollView, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Sidebar } from '@/components/dashboard/Sidebar';
+import { Header } from '@/components/dashboard/Header';
+import { StatCard } from '@/components/dashboard/StatCard';
+import { CashflowChart } from '@/components/dashboard/CashflowChart';
+import { TransactionItem } from '@/components/dashboard/TransactionItem';
+import { SpendingProgress } from '@/components/dashboard/SpendingProgress';
+import { InsightCard } from '@/components/dashboard/InsightCard';
 
-export default function HomeScreen() {
+export default function DashboardScreen() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const { width } = useWindowDimensions();
+  const isWeb = width > 768;
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <Sidebar />
+      <View style={styles.main}>
+        <Header />
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+          {/* Financial Snapshot */}
+          <View style={styles.snapshotGrid}>
+            <StatCard title="Income" value="₦850,000" trend="12%" trendType="up" />
+            <StatCard title="Spending" value="₦420,000" trend="5%" trendType="down" />
+            <StatCard title="Net Flow" value="₦430,000" trend="Stable" trendType="stable" />
+            <StatCard title="Estimated Tax" value="₦210,000" trend="Q3 2024" trendType="period" />
+          </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+          <View style={[styles.layoutGrid, isWeb && styles.layoutGridWeb]}>
+            {/* Left Column */}
+            <View style={isWeb ? styles.leftColumn : styles.fullWidth}>
+              <CashflowChart />
+
+              {/* Recent Transactions */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <View style={styles.cardHeader}>
+                  <ThemedText style={styles.cardTitle}>Recent Transactions</ThemedText>
+                </View>
+                <View>
+                  <TransactionItem
+                    title="Bank Transfer"
+                    time="Today, 2:45 PM"
+                    amount="-₦25,000"
+                    type="expense"
+                    icon="arrow.downward"
+                  />
+                  <TransactionItem
+                    title="Spar Supermarket"
+                    time="Yesterday, 11:20 AM"
+                    amount="-₦12,400"
+                    type="expense"
+                    icon="shopping.bag"
+                  />
+                  <TransactionItem
+                    title="Salary Payment"
+                    time="Oct 28, 2024"
+                    amount="+₦450,000"
+                    type="income"
+                    icon="payments"
+                  />
+                </View>
+                <TouchableOpacity style={styles.viewAllButton}>
+                  <ThemedText style={[styles.viewAllText, { color: colors.primary }]}>
+                    View all transactions
+                  </ThemedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Right Column */}
+            <View style={isWeb ? styles.rightColumn : styles.fullWidth}>
+              {/* Spending Breakdown */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, padding: 24 }]}>
+                <ThemedText style={[styles.cardTitle, { marginBottom: 24 }]}>Spending Breakdown</ThemedText>
+                <SpendingProgress label="Food & Dining" value="₦145,000" percentage={45} color={colors.primary} />
+                <SpendingProgress label="Transport" value="₦82,000" percentage={28} color={colors.info} />
+                <SpendingProgress label="Subscriptions" value="₦35,000" percentage={15} color={colors.secondary} />
+              </View>
+
+              {/* Smart Insights */}
+              <View style={styles.insightsSection}>
+                <ThemedText style={styles.sectionHeader}>SMART INSIGHTS</ThemedText>
+                <InsightCard
+                  title="Potential Savings"
+                  description="We identified 3 duplicate subscriptions. You could save ₦80,000 monthly by optimizing your plans."
+                  icon="lightbulb"
+                  type="primary"
+                />
+                <InsightCard
+                  title="Tax Efficiency"
+                  description="Your deductible business expenses are trending higher this month. Track them for better returns."
+                  icon="verified"
+                  type="success"
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  root: {
+    flex: 1,
     flexDirection: 'row',
+  },
+  main: {
+    flex: 1,
+    height: '100%',
+  },
+  scroll: {
+    flex: 1,
+  },
+  content: {
+    padding: 24,
+    maxWidth: 1280,
+    width: '100%',
+    alignSelf: 'center',
+    gap: 24,
+  },
+  snapshotGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    width: '100%',
+  },
+  layoutGrid: {
+    flexDirection: 'column',
+    gap: 24,
+  },
+  layoutGridWeb: {
+    flexDirection: 'row',
+  },
+  leftColumn: {
+    flex: 2,
+    gap: 24,
+  },
+  rightColumn: {
+    flex: 1,
+    gap: 24,
+  },
+  fullWidth: {
+    width: '100%',
+    gap: 24,
+  },
+  card: {
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  cardHeader: {
+    padding: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(17, 115, 212, 0.05)',
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  viewAllButton: {
+    padding: 16,
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  viewAllText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  sectionHeader: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#94a3b8',
+    letterSpacing: 1,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  insightsSection: {
+    gap: 4,
   },
 });
