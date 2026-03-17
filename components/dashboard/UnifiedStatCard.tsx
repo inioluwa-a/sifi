@@ -2,13 +2,18 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export function UnifiedStatCard() {
-  // Specific colors from the design reference image
-  const cardBg = '#00425A'; // Deep teal from image
-  const accentColor = '#60DBC5'; // Mint/cyan accent for income
-  const dangerAccent = '#FF6B6B'; // Red accent for expenses
-  const yellowAccent = '#FFB800'; // Yellow for expenses amount
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  // Colors from the new design system
+  const cardBg = colors.primary;
+  const accentColor = '#60DBC5';
+  const dangerAccent = '#FF6B6B';
+  const yellowAccent = Colors.light.warning; // Amber accent
 
   return (
     <View style={[styles.card, { backgroundColor: cardBg }]}>
@@ -48,7 +53,6 @@ export function UnifiedStatCard() {
         </View>
       </View>
 
-      {/* Decorative background circle/blob if possible, or just keep it clean */}
       <View style={styles.decoration} />
     </View>
   );
@@ -58,14 +62,14 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     padding: 24,
-    borderRadius: 16,
+    borderRadius: 20,
     overflow: 'hidden',
     position: 'relative',
-    elevation: 4,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
   },
   header: {
     flexDirection: 'row',
@@ -81,9 +85,9 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 32,
     height: 32,
-    borderRadius: 6,
+    borderRadius: 8,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.6)',
+    borderColor: 'rgba(255, 255, 255, 0.4)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   tag: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
@@ -106,8 +110,8 @@ const styles = StyleSheet.create({
   },
   mainValue: {
     color: '#fff',
-    fontSize: 44,
-    fontWeight: '700',
+    fontSize: 48,
+    fontWeight: '800',
     marginBottom: 24,
   },
   divider: {
@@ -132,23 +136,24 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 12,
     fontWeight: '700',
+    textTransform: 'uppercase',
   },
   statValue: {
     color: '#fff',
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   trendText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   decoration: {
     position: 'absolute',
     bottom: -40,
     right: -40,
-    width: 160,
-    height: 160,
-    borderRadius: 80,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     zIndex: -1,
   },

@@ -30,6 +30,7 @@ const MAPPING = {
   'settings': 'settings',
   'account.balance': 'account-balance',
   'bar.chart': 'bar-chart',
+  'plus': 'add',
 } as IconMapping;
 
 /**

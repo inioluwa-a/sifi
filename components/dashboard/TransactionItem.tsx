@@ -11,9 +11,10 @@ interface TransactionItemProps {
   amount: string;
   type: 'income' | 'expense' | 'other';
   icon: string;
+  isBusiness?: boolean;
 }
 
-export function TransactionItem({ title, time, amount, type, icon }: TransactionItemProps) {
+export function TransactionItem({ title, time, amount, type, icon, isBusiness = false }: TransactionItemProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
@@ -25,7 +26,7 @@ export function TransactionItem({ title, time, amount, type, icon }: Transaction
 
   const getIconBg = () => {
     const color = getIconColor();
-    return `${color}1A`; // 10% opacity hex
+    return `${color}0D`; // 5% opacity hex
   };
 
   return (
@@ -35,11 +36,18 @@ export function TransactionItem({ title, time, amount, type, icon }: Transaction
           <IconSymbol name={icon as any} size={20} color={getIconColor()} />
         </View>
         <View>
-          <ThemedText style={styles.title}>{title}</ThemedText>
+          <View style={styles.titleRow}>
+            <ThemedText style={styles.title}>{title}</ThemedText>
+            {isBusiness && (
+              <View style={[styles.badge, { backgroundColor: `${colors.primary}0D` }]}>
+                <ThemedText style={[styles.badgeText, { color: colors.primary }]}>Business</ThemedText>
+              </View>
+            )}
+          </View>
           <ThemedText style={styles.time}>{time}</ThemedText>
         </View>
       </View>
-      <ThemedText style={[styles.amount, { color: type === 'income' ? colors.success : colors.danger }]}>
+      <ThemedText style={[styles.amount, { color: type === 'income' ? colors.success : colors.text }]}>
         {amount}
       </ThemedText>
     </TouchableOpacity>
@@ -51,8 +59,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
   },
   left: {
@@ -61,23 +69,38 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   title: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  badge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
   },
   time: {
-    fontSize: 12,
-    color: '#64748b',
+    fontSize: 13,
+    color: '#64748B',
     marginTop: 2,
   },
   amount: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });
