@@ -6,6 +6,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { Header } from '@/components/dashboard/Header';
 import { StatCard } from '@/components/dashboard/StatCard';
+import { UnifiedStatCard } from '@/components/dashboard/UnifiedStatCard';
 import { CashflowChart } from '@/components/dashboard/CashflowChart';
 import { TransactionItem } from '@/components/dashboard/TransactionItem';
 import { SpendingProgress } from '@/components/dashboard/SpendingProgress';
@@ -25,10 +26,12 @@ export default function DashboardScreen() {
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
           {/* Financial Snapshot */}
           <View style={styles.snapshotGrid}>
-            <StatCard title="Income" value="₦850,000" trend="12%" trendType="up" />
-            <StatCard title="Spending" value="₦420,000" trend="5%" trendType="down" />
-            <StatCard title="Net Flow" value="₦430,000" trend="Stable" trendType="stable" />
-            <StatCard title="Estimated Tax" value="₦210,000" trend="Q3 2024" trendType="period" />
+            <View style={isWeb ? { flex: 3 } : { width: '100%' }}>
+              <UnifiedStatCard />
+            </View>
+            <View style={isWeb ? { flex: 1 } : { width: '100%' }}>
+              <StatCard title="Estimated Tax" value="₦210,000" trend="Q3 2024" trendType="period" />
+            </View>
           </View>
 
           <View style={[styles.layoutGrid, isWeb && styles.layoutGridWeb]}>
